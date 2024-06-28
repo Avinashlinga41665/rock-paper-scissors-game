@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock, Paper, Scissors</title>
+    <link rel="stylesheet" href="Style1.css">
+    <style>
+        .startbutton {
+            background-color: #764109;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: none;
+        }
+
+        .startbutton:hover {
+            background-color: #45a049;
+        }
+        .savebuttons {
+            background-color: #764109;
+            color: white;
+            padding: 5px 8px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 2px 1px;
+            cursor: pointer;
+            border-radius: 2px;
+            border: none;
+        }
+        .savebuttons:hover {
+            background-color: #45a049;
+        }
+
+        .popup-container {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1; /* Ensures the popup is on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+        }
+
+        .popup-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.3s;
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .multi-player-inputs {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1; /* Ensures the popup is on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+        }
+
+        .multi-player-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rock, Paper, Scissors</h1>
+    <div class="score-board">
+        <div class="badge" id="user-label">Player 1</div>
+        <div id="user-choice" class="choice-display"></div>
+        <div class="badge" id="comp-label">Player 2</div>
+        <div id="comp-choice" class="choice-display"></div>
+        <div id="score">0 : 0</div>
+    </div>
+    <button class="startbutton" id="start-button">Start Game</button>
+    <div class="Content">
+        <div id="popupContainer" class="popup-container">
+            <div class="popup-content">
+                <span class="close-btn" id="closePopupBtn">&times;</span>
+                <button class="startbutton" id="singlePlayerButton">Single Player</button>
+                <button class="startbutton" id="multiPlayerButton">Multi Player</button>
+            </div>
+        </div>
+        <div class="multi-player-inputs">
+            <div class="multi-player-content" id="multiplayercontent">
+                <h2>Multi Player</h2>
+                <span class="close-btn" id="closePopupBtn1">&times;</span>
+                <p class="badge" id="currentPlayer">Enter Name for Player 1:</p>
+                <textarea id="textboxname"></textarea>
+                <button class="savebuttons" id="savebutton">Save Name</button>
+            </div>
+        </div>
+        <div class="container">
+            <h1>Choose</h1>
+            <div class="game">
+                <div class="result">
+                    <p>Make your move!</p>
+                </div>
+                <div class="choices">
+                    <div class="choice" id="rock"><p>Rock</p></div>
+                    <div class="choice" id="paper"><p>Paper</p></div>
+                    <div class="choice" id="scissors"><p>Scissors</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Variables and Elements
+        const userScoreSpan = document.getElementById('score');
+        const resultP = document.querySelector('.result > p');
+        const rockDiv = document.getElementById('rock');
+        const paperDiv = document.getElementById('paper');
+        const scissorsDiv = document.getElementById('scissors');
+        const startButton = document.getElementById('start-button');
+        const userChoiceDiv = document.getElementById('user-choice');
+        const compChoiceDiv = document.getElementById('comp-choice');
+        let userlabel = document.getElementById('user-label');
+        let complabel = document.getElementById('comp-label');
+        
+        let player1Name = "Player 1";
+        let player2Name = "Player 2";
+        let userScore = 0;
+        let compScore = 0;
+        let round = 0;
+        const maxRounds = 10;
+        let gameStarted = false;
+        let gameMode = 'single'; // default to single player
+        let currentPlayer = 'player1';
+
+        // Functions
+        function getComputerChoice() {
+            const choices = ['rock', 'paper', 'scissors'];
+            const randomNumber = Math.floor(Math.random() * 3);
+            return choices[randomNumber];
+        }
+
+        function convertToWord(choice) {
+            if (choice === 'rock') return 'Rock';
+            if (choice === 'paper') return 'Paper';
+            return 'Scissors';
+        }
+
+        function win(userChoice, computerChoice) {
+            userScore++;
+            userScoreSpan.innerHTML = `${userScore} : ${compScore}`;
+            resultP.innerHTML = `${convertToWord(userChoice)} beats ${convertToWord(computerChoice)}. You win!`;
+            document.querySelector('.Content').style.background = '#4CAF50'; // Green for win
+        }
+
+        function lose(userChoice, computerChoice) {
+            compScore++;
+            userScoreSpan.innerHTML = `${userScore} : ${compScore}`;
+            resultP.innerHTML = `${convertToWord(computerChoice)} beats ${convertToWord(userChoice)}. You lose!`;
+            document.querySelector('.Content').style.background = '#f44336'; // Red for lose
+        }
+
+        function draw(userChoice, computerChoice) {
+            resultP.innerHTML = `It's a draw! You both chose ${convertToWord(userChoice)}.`;
+            document.querySelector('.Content').style.background = 'skyblue'; // Blue for draw
+        }
+
+        function game(userChoice) {
+            if (gameStarted) {
+                if (gameMode === 'single') {
+                    const computerChoice = getComputerChoice();
+                    userChoiceDiv.innerHTML = convertToWord(userChoice);
+                    compChoiceDiv.innerHTML = convertToWord(computerChoice);
+                    switch (userChoice + computerChoice) {
+                        case 'rockscissors':
+                        case 'paperrock':
+                        case 'scissorspaper':
+                            win(userChoice, computerChoice);
+                            break;
+                        case 'rockpaper':
+                        case 'paperscissors':
+                        case 'scissorsrock':
+                            lose(userChoice, computerChoice);
+                            break;
+                        default:
+                            draw(userChoice, computerChoice);
+                            break;
+                    }
+                } else if (gameMode === 'multi') {
+                    if (currentPlayer === 'player1') {
+                        userChoiceDiv.innerHTML = convertToWord(userChoice);
+                        currentPlayer = 'player2';
+                    } else {
+                        compChoiceDiv.innerHTML = convertToWord(userChoice);
+                        currentPlayer = 'player1';
+                        // Compute winner
+                        switch (userChoiceDiv.innerHTML.toLowerCase() + userChoice) {
+                            case 'rockscissors':
+                            case 'paperrock':
+                            case 'scissorspaper':
+                                win(userChoiceDiv.innerHTML.toLowerCase(), userChoice);
+                                break;
+                            case 'rockpaper':
+                            case 'paperscissors':
+                            case 'scissorsrock':
+                                lose(userChoiceDiv.innerHTML.toLowerCase(), userChoice);
+                                break;
+                            default:
+                                draw(userChoiceDiv.innerHTML.toLowerCase(), userChoice);
+                                break;
+                        }
+                    }
+                }
+
+                round++;
+                if (round >= maxRounds) {
+                    endGame();
+                }
+            }
+        }
+
+        function endGame() {
+    if (gameMode === 'single') {
+        if (userScore > compScore) {
+            resultP.innerHTML = `You win the game with a score of ${userScore} : ${compScore}! Now Restart the Game`;
+        } else if (compScore > userScore) {
+            resultP.innerHTML = `You lose the game with a score of ${userScore} : ${compScore}. Now Restart the Game`;
+        } else {
+            resultP.innerHTML = `It's a tie game with a score of ${userScore} : ${compScore}. Now Restart the Game`;
+        }
+    } else if (gameMode === 'multi') {
+        if (userScore > compScore) {
+            resultP.innerHTML = `${player1Name} wins the game with a score of ${userScore} : ${compScore}! Now Restart the Game`;
+        } else if (compScore > userScore) {
+            resultP.innerHTML = `${player2Name} wins the game with a score of ${userScore} : ${compScore}! Now Restart the Game`;
+        } else {
+            resultP.innerHTML = `It's a tie game with a score of ${userScore} : ${compScore}. Now Restart the Game`;
+        }
+    }
+    startButton.innerHTML = "Restart Game";
+    gameStarted = false;
+}
+
+        function startGame() {
+            userScore = 0;
+            compScore = 0;
+            round = 0;
+            gameStarted = true;
+            startButton.innerHTML = "Start Game";
+            userScoreSpan.innerHTML = `${userScore} : ${compScore}`;
+            resultP.innerHTML = `Make your move!`;
+        }
+
+        function startSinglePlayerGame() {
+            gameMode = 'single';
+            document.getElementById('user-label').style.display = 'block';
+            document.getElementById('comp-label').style.display = 'block';
+            document.querySelector('.multi-player-inputs').style.display = 'none';
+            startGame();
+        }
+
+        function startMultiPlayerGame() {
+            gameMode = 'multi';
+            document.querySelector('.multi-player-inputs').style.display = 'block';
+            document.getElementById('currentPlayer').innerHTML = 'Enter Name for Player 1:';
+        }
+
+        // Event Listeners
+        document.getElementById('start-button').addEventListener('click', function() {
+            document.getElementById('popupContainer').style.display = 'block';
+        });
+
+        document.getElementById('closePopupBtn').addEventListener('click', function() {
+            document.getElementById('popupContainer').style.display = 'none';
+        });
+
+        document.getElementById('closePopupBtn1').addEventListener('click', function() {
+            document.querySelector('.multi-player-inputs').style.display = 'none';
+        });
+
+        document.getElementById('singlePlayerButton').addEventListener('click', function() {
+            document.getElementById('popupContainer').style.display = 'none';
+            userlabel.innerHTML = '😊';
+            complabel.innerHTML = '🤖';
+            startSinglePlayerGame();
+        });
+
+        document.getElementById('multiPlayerButton').addEventListener('click', function() {
+            document.getElementById('popupContainer').style.display = 'none';
+            startMultiPlayerGame();
+        });
+
+        document.getElementById('savebutton').addEventListener('click', function() {
+            const playerName = document.getElementById('textboxname').value.trim();
+            if (currentPlayer === 'player1') {
+                player1Name = playerName || 'Player 1';
+                userlabel.style.display = 'block';
+                userlabel.innerHTML = player1Name;
+                document.getElementById('currentPlayer').innerHTML = 'Enter Name for Player 2:';
+                currentPlayer = 'player2';
+            } else {
+                player2Name = playerName || 'Player 2';
+                complabel.style.display = 'block';
+                complabel.innerHTML = player2Name;
+                document.getElementById('currentPlayer').innerHTML = 'Enter Name for Player 1:';
+                document.querySelector('.multi-player-inputs').style.display = 'none';
+                startGame();
+                currentPlayer = 'player1';
+            }
+            document.getElementById('textboxname').value = ''; // Clear the text box
+        });
+
+        rockDiv.addEventListener('click', () => game('rock'));
+        paperDiv.addEventListener('click', () => game('paper'));
+        scissorsDiv.addEventListener('click', () => game('scissors'));
+
+        window.addEventListener('click', function(event) {
+            if (event.target == document.getElementById('popupContainer')) {
+                document.getElementById('popupContainer').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

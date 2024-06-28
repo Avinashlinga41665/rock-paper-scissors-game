@@ -1,0 +1,152 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+.choice-display {
+    font-size: 1em;
+    color: black;
+}
+
+.popup-container {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1; /* Ensures the popup is on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+}
+
+.popup-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s;
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+button {
+    margin: 10px 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.Content {
+    background: #f5f7fa;
+    display: flex;
+    justify-content: center; /* Center aligns the h1 */
+    align-items: top; /* Center aligns vertically */
+    height: 50vh; /* Ensures full viewport height */
+}
+
+h1 {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px; /* Space between h1 and score-board */
+}
+
+.score-board {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    width: 100%; /* Full width */
+}
+.button{
+
+}
+#user-label{
+    display: block;
+}
+#comp-label{
+    display: block;
+}
+.badge{
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    margin-right: 10px; /* Space between badges */
+}
+
+#score {
+    font-size: 1.5em;
+    color: #333;
+}
+
+.container {
+    text-align: center;
+    background: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 30px;
+    width: 350px;
+}
+
+.game {
+    margin-top: 20px;
+}
+
+.result p {
+    font-size: 1.3em;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.choices {
+    display: flex;
+    justify-content: space-around;
+}
+
+.choice {
+    background: #f1f1f1;
+    border-radius: 50%;
+    padding: 10px;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.choice:hover {
+    transform: scale(1.1);
+}
+
+.choice p {
+    margin: 0;
+}
+
+.choice img {
+    width: 100px;
+    height: 100px;
+}
